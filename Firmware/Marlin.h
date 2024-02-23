@@ -204,7 +204,7 @@ bool IsStopped();                           // Returns true if the print has bee
 #define enquecommand_P(cmd) enquecommand(cmd, true)
 
 //put an ASCII command at the begin of the current buffer, read from flash
-#define enquecommand_front_P(cmd) enquecommand_front(cmd, true)
+// #define enquecommand_front_P(cmd) enquecommand_front(cmd, true)
 
 void clamp_to_software_endstops(float target[3]);
 void refresh_cmd_timeout(void);

@@ -213,9 +213,9 @@ void MMU2::CheckFINDARunout() {
         marlin_stop_and_save_print_to_ram();
         restore_print_from_ram_and_continue(0);
         if (SpoolJoin::spooljoin.isSpoolJoinEnabled() && get_current_tool() != (uint8_t)FILAMENT_UNKNOWN){ // Can't auto if F=?
-            enquecommand_front_P(PSTR("M600 AUTO")); // save print and run M600 command
+            // enquecommand_front_P(PSTR("M600 AUTO")); // save print and run M600 command
         } else {
-            enquecommand_front_P(MSG_M600); // save print and run M600 command
+            // enquecommand_front_P(MSG_M600); // save print and run M600 command
         }
     }
 }
@@ -260,55 +260,7 @@ bool MMU2::RetryIfPossible(ErrorCode ec) {
 }
 
 bool MMU2::VerifyFilamentEnteredPTFE() {
-    planner_synchronize();
-
-    if (WhereIsFilament() != FilamentState::AT_FSENSOR)
-        return false;
-
-    // MMU has finished its load, push the filament further by some defined constant length
-    // If the filament sensor reads 0 at any moment, then report FAILURE
-    const float tryload_length = MMU2_CHECK_FILAMENT_PRESENCE_EXTRUSION_LENGTH - logic.ExtraLoadDistance();
-    TryLoadUnloadReporter tlur(tryload_length);
-
-    /* The position is a triangle wave
-    // current position is not zero, it is an offset
-    //
-    // Keep in mind that the relationship between machine position
-    // and pixel index is not linear. The area around the amplitude
-    // needs to be taken care of carefully. The current implementation
-    // handles each move separately so there is no need to watch for the change
-    // in the slope's sign or check the last machine position.
-    //              y(x)
-    //              ▲
-    //              │     ^◄────────── tryload_length + current_position
-    //   machine    │    / \
-    //   position   │   /   \◄────────── stepper_position_mm + current_position
-    //    (mm)      │  /     \
-    //              │ /       \
-    //              │/         \◄───────current_position
-    //              └──────────────► x
-    //              0           19
-    //                 pixel #
-    */
-
-    bool filament_inserted = true; // expect success
-    // Pixel index will go from 0 to 10, then back from 10 to 0
-    // The change in this number is used to indicate a new pixel
-    // should be drawn on the display
-    for (uint8_t move = 0; move < 2; move++) {
-        extruder_move(move == 0 ? tryload_length : -tryload_length, MMU2_VERIFY_LOAD_TO_NOZZLE_FEED_RATE);
-        while (planner_any_moves()) {
-            filament_inserted = filament_inserted && (WhereIsFilament() == FilamentState::AT_FSENSOR);
-            tlur.Progress(filament_inserted);
-            safe_delay_keep_alive(0);
-        }
-    }
-    Disable_E0();
-    if (!filament_inserted) {
-        IncrementLoadFails();
-    }
-    tlur.DumpToSerial();
-    return filament_inserted;
+    return true;
 }
 
 bool MMU2::ToolChangeCommonOnce(uint8_t slot) {
@@ -364,23 +316,22 @@ void MMU2::ToolChangeCommon(uint8_t slot) {
 }
 
 bool MMU2::tool_change(uint8_t slot) {
-    if (!WaitForMMUReady())
-        return false;
+    // if (!WaitForMMUReady())
+    //     return false;
 
-    if (slot != extruder) {
-        if (/*FindaDetectsFilament()*/
-            /*!IS_SD_PRINTING && !usb_timer.running()*/
-            !marlin_printingIsActive()) {
-            // If Tcodes are used manually through the serial
-            // we need to unload manually as well -- but only if FINDA detects filament
-            unload();
-        }
+    // if (slot != extruder) {
+    //     if (/*FindaDetectsFilament()*/
+    //         /*!IS_SD_PRINTING && !usb_timer.running()*/
+    //         !marlin_printingIsActive()) {
+    //         // If Tcodes are used manually through the serial
+    //         // we need to unload manually as well -- but only if FINDA detects filament
+    //         unload();
+    //     }
 
-        ReportingRAII rep(CommandInProgress::ToolChange);
-        FSensorBlockRunout blockRunout;
-        planner_synchronize();
-        ToolChangeCommon(slot);
-    }
+    //     ReportingRAII rep(CommandInProgress::ToolChange);
+    //     planner_synchronize();
+    //     ToolChangeCommon(slot);
+    // }
     return true;
 }
 
@@ -390,28 +341,28 @@ bool MMU2::tool_change(uint8_t slot) {
 ///- Tx Same as T?, except nozzle doesn't have to be preheated. Tc must be placed after extruder nozzle is preheated to finish filament load.
 ///- Tc Load to nozzle after filament was prepared by Tx and extruder nozzle is already heated.
 bool MMU2::tool_change(char code, uint8_t slot) {
-    if (!WaitForMMUReady())
-        return false;
+    // if (!WaitForMMUReady())
+    //     return false;
 
-    FSensorBlockRunout blockRunout;
+    // FSensorBlockRunout blockRunout;
 
-    switch (code) {
-    case '?': {
-        waitForHotendTargetTemp(100, [] {});
-        load_filament_to_nozzle(slot);
-    } break;
+    // switch (code) {
+    // case '?': {
+    //     waitForHotendTargetTemp(100, [] {});
+    //     load_filament_to_nozzle(slot);
+    // } break;
 
-    case 'x': {
-        thermal_setExtrudeMintemp(0); // Allow cold extrusion since Tx only loads to the gears not nozzle
-        tool_change(slot);
-        thermal_setExtrudeMintemp(EXTRUDE_MINTEMP);
-    } break;
+    // case 'x': {
+    //     thermal_setExtrudeMintemp(0); // Allow cold extrusion since Tx only loads to the gears not nozzle
+    //     tool_change(slot);
+    //     thermal_setExtrudeMintemp(EXTRUDE_MINTEMP);
+    // } break;
 
-    case 'c': {
-        waitForHotendTargetTemp(100, [] {});
-        execute_load_to_nozzle_sequence();
-    } break;
-    }
+    // case 'c': {
+    //     waitForHotendTargetTemp(100, [] {});
+    //     execute_load_to_nozzle_sequence();
+    // } break;
+    // }
 
     return true;
 }
@@ -447,23 +398,23 @@ bool MMU2::set_filament_type(uint8_t /*slot*/, uint8_t /*type*/) {
 }
 
 void MMU2::UnloadInner() {
-    FSensorBlockRunout blockRunout;
-    filament_ramming();
+    // FSensorBlockRunout blockRunout;
+    // filament_ramming();
 
-    // we assume the printer managed to relieve filament tip from the gears,
-    // so repeating that part in case of an MMU restart is not necessary
-    for (;;) {
-        Disable_E0();
-        logic.UnloadFilament();
-        if (manage_response(false, true))
-            break;
-        IncrementMMUFails();
-    }
-    MakeSound(Confirm);
+    // // we assume the printer managed to relieve filament tip from the gears,
+    // // so repeating that part in case of an MMU restart is not necessary
+    // for (;;) {
+    //     Disable_E0();
+    //     logic.UnloadFilament();
+    //     if (manage_response(false, true))
+    //         break;
+    //     IncrementMMUFails();
+    // }
+    // MakeSound(Confirm);
 
-    // no active tool
-    extruder = MMU2_NO_TOOL;
-    tool_change_extruder = MMU2_NO_TOOL;
+    // // no active tool
+    // extruder = MMU2_NO_TOOL;
+    // tool_change_extruder = MMU2_NO_TOOL;
 }
 
 bool MMU2::unload() {
@@ -542,28 +493,28 @@ bool MMU2::load_filament(uint8_t slot) {
 }
 
 bool MMU2::load_filament_to_nozzle(uint8_t slot) {
-    if (!WaitForMMUReady())
-        return false;
+    // if (!WaitForMMUReady())
+    //     return false;
 
-    WaitForHotendTargetTempBeep();
+    // WaitForHotendTargetTempBeep();
 
-    FullScreenMsgLoad(slot);
-    {
-        // used for MMU-menu operation "Load to Nozzle"
-        ReportingRAII rep(CommandInProgress::ToolChange);
-        FSensorBlockRunout blockRunout;
+    // FullScreenMsgLoad(slot);
+    // {
+    //     // used for MMU-menu operation "Load to Nozzle"
+    //     ReportingRAII rep(CommandInProgress::ToolChange);
+    //     FSensorBlockRunout blockRunout;
 
-        if (extruder != MMU2_NO_TOOL) { // we already have some filament loaded - free it + shape its tip properly
-            filament_ramming();
-        }
+    //     if (extruder != MMU2_NO_TOOL) { // we already have some filament loaded - free it + shape its tip properly
+    //         filament_ramming();
+    //     }
 
-        ToolChangeCommon(slot);
+    //     ToolChangeCommon(slot);
 
-        // Finish loading to the nozzle with finely tuned steps.
-        execute_load_to_nozzle_sequence();
-        MakeSound(Confirm);
-    }
-    ScreenUpdateEnable();
+    //     // Finish loading to the nozzle with finely tuned steps.
+    //     execute_load_to_nozzle_sequence();
+    //     MakeSound(Confirm);
+    // }
+    // ScreenUpdateEnable();
     return true;
 }
 
@@ -1057,49 +1008,9 @@ void __attribute__((noinline)) MMU2::HelpUnloadToFinda() {
 
 void MMU2::OnMMUProgressMsgSame(ProgressCode pc) {
     switch (pc) {
-    case ProgressCode::UnloadingToFinda:
-        if (unloadFilamentStarted && !planner_any_moves()) { // Only plan a move if there is no move ongoing
-            switch (WhereIsFilament()) {
-            case FilamentState::AT_FSENSOR:
-            case FilamentState::IN_NOZZLE:
-            case FilamentState::UNAVAILABLE: // actually Unavailable makes sense as well to start the E-move to release the filament from the gears
-                HelpUnloadToFinda();
-                break;
-            default:
-                unloadFilamentStarted = false;
-            }
-        }
-        break;
     case ProgressCode::FeedingToFSensor:
         if (loadFilamentStarted) {
-            switch (WhereIsFilament()) {
-            case FilamentState::AT_FSENSOR:
-                // fsensor triggered, finish FeedingToExtruder state
-                loadFilamentStarted = false;
-
-                // Abort any excess E-move from the planner queue
-                planner_abort_queued_moves();
-
-                // After the MMU knows the FSENSOR is triggered it will:
-                // 1. Push the filament by additional 30mm (see fsensorToNozzle)
-                // 2. Disengage the idler and push another 2mm.
-                extruder_move(logic.ExtraLoadDistance() + 2, logic.PulleySlowFeedRate());
-                break;
-            case FilamentState::NOT_PRESENT:
-                // fsensor not triggered, continue moving extruder
-                if (!planner_any_moves()) { // Only plan a move if there is no move ongoing
-                    // Plan a very long move, where 'very long' is hundreds
-                    // of millimeters. Keep in mind though the move can't be much longer
-                    // than 450mm because the firmware will ignore too long extrusions
-                    // for safety reasons. See PREVENT_LENGTHY_EXTRUDE.
-                    // Use 350mm to be safely away from the prevention threshold
-                    extruder_move(350.0f, logic.PulleySlowFeedRate());
-                }
-                break;
-            default:
-                // Abort here?
-                break;
-            }
+            extruder_move(logic.ExtraLoadDistance() + 2, logic.PulleySlowFeedRate());
         }
         break;
     default:

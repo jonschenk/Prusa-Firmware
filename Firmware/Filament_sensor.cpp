@@ -148,13 +148,13 @@ void Filament_sensor::triggerFilamentRemoved() {
 
 void Filament_sensor::filRunout() {
 //    SERIAL_ECHOLNPGM("filRunout");
-    runoutEnabled = false;
-    autoLoadEnabled = false;
-    stop_and_save_print_to_ram(0, 0);
-    restore_print_from_ram_and_continue(0);
-    eeprom_increment_byte((uint8_t *)EEPROM_FERROR_COUNT);
-    eeprom_increment_word((uint16_t *)EEPROM_FERROR_COUNT_TOT);
-    enquecommand_front_P(MSG_M600);
+//     runoutEnabled = false;
+//     autoLoadEnabled = false;
+//     stop_and_save_print_to_ram(0, 0);
+//     restore_print_from_ram_and_continue(0);
+//     eeprom_increment_byte((uint8_t *)EEPROM_FERROR_COUNT);
+//     eeprom_increment_word((uint16_t *)EEPROM_FERROR_COUNT_TOT);
+    // enquecommand_front_P(MSG_M600);
 }
 
 void Filament_sensor::triggerError() {
@@ -467,14 +467,14 @@ void PAT9125_sensor::resetStepCount() {
 }
 
 void PAT9125_sensor::filJam() {
-    runoutEnabled = false;
-    autoLoadEnabled = false;
-    jamDetection = false;
-    stop_and_save_print_to_ram(0, 0);
-    restore_print_from_ram_and_continue(0);
-    eeprom_increment_byte((uint8_t *)EEPROM_FERROR_COUNT);
-    eeprom_increment_word((uint16_t *)EEPROM_FERROR_COUNT_TOT);
-    enquecommand_front_P(MSG_M600);
+    // runoutEnabled = false;
+    // autoLoadEnabled = false;
+    // jamDetection = false;
+    // stop_and_save_print_to_ram(0, 0);
+    // restore_print_from_ram_and_continue(0);
+    // eeprom_increment_byte((uint8_t *)EEPROM_FERROR_COUNT);
+    // eeprom_increment_word((uint16_t *)EEPROM_FERROR_COUNT_TOT);
+    // enquecommand_front_P(MSG_M600);
 }
 
 bool PAT9125_sensor::updatePAT9125() {

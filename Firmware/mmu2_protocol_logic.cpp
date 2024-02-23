@@ -50,10 +50,10 @@ const Register ProtocolLogic::initRegs8Addrs[ProtocolLogic::initRegs8Count] PROG
 void ProtocolLogic::CheckAndReportAsyncEvents() {
     // even when waiting for a query period, we need to report a change in filament sensor's state
     // - it is vital for a precise synchronization of moves of the printer and the MMU
-    uint8_t fs = (uint8_t)WhereIsFilament();
-    if (fs != lastFSensor) {
-        SendAndUpdateFilamentSensor();
-    }
+    // uint8_t fs = (uint8_t)WhereIsFilament();
+    // if (fs != lastFSensor) {
+    //     SendAndUpdateFilamentSensor();
+    // }
 }
 
 void ProtocolLogic::SendQuery() {
@@ -109,8 +109,8 @@ bool __attribute__((noinline)) ProtocolLogic::ProcessWritingInitRegister() {
 }
 
 void ProtocolLogic::SendAndUpdateFilamentSensor() {
-    SendMsg(RequestMsg(RequestMsgCodes::FilamentSensor, lastFSensor = (uint8_t)WhereIsFilament()));
-    scopeState = ScopeState::FilamentSensorStateSent;
+    // SendMsg(RequestMsg(RequestMsgCodes::FilamentSensor, lastFSensor = (uint8_t)WhereIsFilament()));
+    // scopeState = ScopeState::FilamentSensorStateSent;
 }
 
 void ProtocolLogic::SendButton(uint8_t btn) {
@@ -549,7 +549,7 @@ ProtocolLogic::ProtocolLogic(MMU2Serial *uart, uint8_t extraLoadDistance, uint8_
     , errorCode(ErrorCode::OK)
     , progressCode(ProgressCode::OK)
     , buttonCode(Buttons::NoButton)
-    , lastFSensor((uint8_t)WhereIsFilament())
+    // , lastFSensor((uint8_t)WhereIsFilament())
     , regIndex(0)
     , retryAttempts(MAX_RETRIES)
     , inAutoRetry(false) {
