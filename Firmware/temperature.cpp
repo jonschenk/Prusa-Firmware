@@ -995,14 +995,7 @@ static void max_temp_error(uint8_t e) {
 #endif
 }
 
-static void min_temp_error(uint8_t e) {
-    static const char err[] PROGMEM = "MINTEMP";
-    if(IsStopped() == false) {
-        temp_error_messagepgm(err, e);
-        prusa_statistics(92);
-    }
-    ThermalStop();
-}
+//TODO 
 
 static void bed_max_temp_error(void) {
     if(IsStopped() == false) {
@@ -1481,17 +1474,15 @@ void handle_temp_error()
     case TempErrorType::min:
         switch((TempErrorSource)temp_error_state.source) {
         case TempErrorSource::hotend:
-            if(temp_error_state.assert) {
-                min_temp_error(temp_error_state.index);
-            } else {
-                // no recovery, just force the user to restart the printer
-                // which is a safer variant than just continuing printing
-                // The automaton also checks for hysteresis - the temperature must have reached a few degrees above the MINTEMP, before
-                // we shall signalize, that MINTEMP has been fixed
-                // Code notice: normally the alert_automaton instance would have been placed here
-                // as static alert_automaton_mintemp alert_automaton_hotend, but
-                alert_automaton_hotend.step(current_temperature[0], minttemp[0] + TEMP_HYSTERESIS);
-            }
+            
+            // no recovery, just force the user to restart the printer
+            // which is a safer variant than just continuing printing
+            // The automaton also checks for hysteresis - the temperature must have reached a few degrees above the MINTEMP, before
+            // we shall signalize, that MINTEMP has been fixed
+            // Code notice: normally the alert_automaton instance would have been placed here
+            // as static alert_automaton_mintemp alert_automaton_hotend, but
+            alert_automaton_hotend.step(current_temperature[0], minttemp[0] + TEMP_HYSTERESIS);
+    
             break;
         case TempErrorSource::bed:
             if(temp_error_state.assert) {
