@@ -2398,9 +2398,7 @@ static void _lcd_move(const char *name, uint8_t axis, int min, int max)
 
 void lcd_move_e()
 {
-	if (true)
-	{
-		if (lcd_encoder != 0)
+	if (lcd_encoder != 0)
 		{
 			refresh_cmd_timeout();
 			if (! planner_queue_full())
@@ -2419,12 +2417,6 @@ void lcd_move_e()
 			menu_draw_float31(PSTR("Extruder:"), current_position[E_AXIS]);
 		}
 		menu_back_if_clicked();
-	}
-	else
-	{
-		show_preheat_nozzle_warning();
-		lcd_return_to_status();
-	}
 }
 
 
