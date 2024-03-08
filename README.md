@@ -1,3 +1,5 @@
+### This firmware is modified Jon Schenk for a Servant Engineering Project to extrude clay through a custom built extruder system
+
 # Prusa Firmware MK3
 
 This repository contains the source code and the development versions of the firmware running on the [Original Prusa i3](https://prusa3d.com/) MK3S/MK3/MK2.5S/MK2.5 line of printers.
