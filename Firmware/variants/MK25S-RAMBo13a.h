@@ -199,7 +199,7 @@
 #endif
 
 // Extrude mintemp
-#define EXTRUDE_MINTEMP 175
+#define EXTRUDE_MINTEMP 0
 
 // Extruder cooling fans
 #define EXTRUDER_0_AUTO_FAN_PIN   8
