@@ -1,4 +1,4 @@
-### This firmware is modified Jon Schenk for a Servant Engineering Project to extrude clay through a custom built extruder system
+### This firmware is modified by Jon Schenk to extrude clay through a custom built extruder system
 
 # Prusa Firmware MK3
 
