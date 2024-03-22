@@ -810,6 +810,7 @@ FORCE_INLINE void isr() {
   if (current_block == NULL)
     stepper_next_block();
 
+
   if (current_block != NULL) 
   {
     stepper_check_endstops();
