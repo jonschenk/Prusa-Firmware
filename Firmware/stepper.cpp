@@ -434,16 +434,16 @@ FORCE_INLINE void stepper_next_block()
       WRITE_NC(Z_DIR_PIN,!INVERT_Z_DIR);
       count_direction[Z_AXIS]=1;
     }
-    if ((out_bits & (1 << E_AXIS)) != 0) { // -direction
-#ifndef LIN_ADVANCE
-      WRITE(E0_DIR_PIN, INVERT_E0_DIR);
-#endif /* LIN_ADVANCE */
-      count_direction[E_AXIS] = -1;
-    } else { // +direction
+    if ((out_bits & (1 << E_AXIS)) != 0) { // -direction INVERTED FOR CLAY EXTRUSION
 #ifndef LIN_ADVANCE
       WRITE(E0_DIR_PIN, !INVERT_E0_DIR);
 #endif /* LIN_ADVANCE */
       count_direction[E_AXIS] = 1;
+    } else { // +direction
+#ifndef LIN_ADVANCE
+      WRITE(E0_DIR_PIN, INVERT_E0_DIR);
+#endif /* LIN_ADVANCE */
+      count_direction[E_AXIS] = -1;
     }
   }
   else {
